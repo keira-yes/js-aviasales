@@ -2,11 +2,13 @@ const cities = ['Киев', 'Харьков', 'Львов', 'Хмельницк�
 
 const formSearch = document.querySelector('.form-search'),
   inputCitiesFrom = formSearch.querySelector('.input__cities-from'),
-  dropdownCitiesFrom = formSearch.querySelector('.dropdown__cities-from');
+  dropdownCitiesFrom = formSearch.querySelector('.dropdown__cities-from'),
+  inputCitiesTo = formSearch.querySelector('.input__cities-to'),
+  dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to');
 
-inputCitiesFrom.addEventListener('input', () => {
-  dropdownCitiesFrom.textContent = '';
-  const inputValue = inputCitiesFrom.value.toLowerCase().trim();
+const showCities = (input, list) => {
+  list.textContent = '';
+  const inputValue = input.value.toLowerCase().trim();
 
   if (!inputValue) return;
 
@@ -18,7 +20,14 @@ inputCitiesFrom.addEventListener('input', () => {
     const li = document.createElement('li');
     li.classList.add('dropdown__city');
     li.textContent = item;
-    dropdownCitiesFrom.append(li);
+    list.append(li);
   });
+};
 
+inputCitiesFrom.addEventListener('input', () => {
+  showCities(inputCitiesFrom, dropdownCitiesFrom);
+});
+
+inputCitiesTo.addEventListener('input', () => {
+  showCities(inputCitiesTo, dropdownCitiesTo);
 });
