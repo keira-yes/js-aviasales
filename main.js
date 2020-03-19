@@ -6,7 +6,7 @@ const formSearch = document.querySelector('.form-search'),
   inputCitiesTo = formSearch.querySelector('.input__cities-to'),
   dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to');
 
-// Method of displaying dropdown list when type in input
+// Function for displaying dropdown list when type in input
 
 const showDropdown = (input, list, data = []) => {
   list.textContent = '';
@@ -26,6 +26,16 @@ const showDropdown = (input, list, data = []) => {
   });
 };
 
+// Function for filling an input with a clicked element
+
+const fillInput = (input, list, e) => {
+  const target = e.target;
+  if (target.tagName.toLowerCase() === 'li') {
+    input.value = target.textContent;
+    list.textContent = '';
+  }
+};
+
 // Display cities of direction from
 
 inputCitiesFrom.addEventListener('input', () => {
@@ -36,4 +46,16 @@ inputCitiesFrom.addEventListener('input', () => {
 
 inputCitiesTo.addEventListener('input', () => {
   showDropdown(inputCitiesTo, dropdownCitiesTo, cities);
+});
+
+// Fill input of direction from
+
+dropdownCitiesFrom.addEventListener('click', (e) => {
+  fillInput(inputCitiesFrom, dropdownCitiesFrom, e);
+});
+
+// Fill input of direction to
+
+dropdownCitiesTo.addEventListener('click', (e) => {
+  fillInput(inputCitiesTo, dropdownCitiesTo, e);
 });
