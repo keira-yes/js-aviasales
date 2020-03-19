@@ -6,17 +6,19 @@ const formSearch = document.querySelector('.form-search'),
   inputCitiesTo = formSearch.querySelector('.input__cities-to'),
   dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to');
 
-const showCities = (input, list) => {
+// Method of displaying dropdown list when type in input
+
+const showDropdown = (input, list, data = []) => {
   list.textContent = '';
   const inputValue = input.value.toLowerCase().trim();
 
   if (!inputValue) return;
 
-  const citiesList = cities.filter(item => {
+  const dropdownList = data.filter(item => {
     return item.toLocaleLowerCase().includes(inputValue);
   });
 
-  citiesList.map(item => {
+  dropdownList.map(item => {
     const li = document.createElement('li');
     li.classList.add('dropdown__city');
     li.textContent = item;
@@ -24,10 +26,14 @@ const showCities = (input, list) => {
   });
 };
 
+// Display cities of direction from
+
 inputCitiesFrom.addEventListener('input', () => {
-  showCities(inputCitiesFrom, dropdownCitiesFrom);
+  showDropdown(inputCitiesFrom, dropdownCitiesFrom, cities);
 });
 
+// Display cities of direction to
+
 inputCitiesTo.addEventListener('input', () => {
-  showCities(inputCitiesTo, dropdownCitiesTo);
+  showDropdown(inputCitiesTo, dropdownCitiesTo, cities);
 });
