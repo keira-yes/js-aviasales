@@ -1,6 +1,7 @@
 const CITY_API_URL = 'http://api.travelpayouts.com/data/ru/cities.json',
   PROXY = 'https://cors-anywhere.herokuapp.com/',
-  API_KEY = '756ee7f5074b93862f1b9f343e97dff9';
+  API_KEY = '756ee7f5074b93862f1b9f343e97dff9',
+  CALENDAR = 'http://min-prices.aviasales.ru/calendar_preload';
 
 let cities = [];
 
@@ -26,12 +27,6 @@ const getData = (url, callbackFunction) => {
   request.send();
 };
 
-// Get cities from API
-
-const getCities = (data) => {
-  cities = JSON.parse(data).filter(item => item.name).map(item => item.name);
-};
-
 // Function for displaying dropdown list when type in input
 
 const showDropdown = (input, list, data = []) => {
@@ -41,13 +36,14 @@ const showDropdown = (input, list, data = []) => {
   if (!inputValue) return;
 
   const dropdownList = data.filter(item => {
-    return item.toLocaleLowerCase().includes(inputValue);
+    const itemName = item.name.toLocaleLowerCase();
+    return itemName.includes(inputValue);
   });
 
   dropdownList.map(item => {
     const li = document.createElement('li');
     li.classList.add('dropdown__city');
-    li.textContent = item;
+    li.textContent = item.name;
     list.append(li);
   });
 };
@@ -86,6 +82,16 @@ dropdownCitiesTo.addEventListener('click', (e) => {
   fillInput(inputCitiesTo, dropdownCitiesTo, e);
 });
 
+// Form submit
+
+formSearch.addEventListener('submit', (e) => {
+  e.preventDefault();
+});
+
 // Get cities from API
 
-getData(PROXY + CITY_API_URL, getCities);
+getData(PROXY + CITY_API_URL, (data) => {
+  cities = JSON.parse(data).filter(item => item.name);
+});
+
+// getData(PROXY + CALENDAR + "?origin=SVX&destination=KGD&depart_date=2020-05-15&one_way=true&token=" + API_KEY, getTicket);
