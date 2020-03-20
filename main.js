@@ -1,10 +1,35 @@
-const cities = ['Киев', 'Харьков', 'Львов', 'Хмельницкий', 'Одесса', 'Мирноград', 'Миргород', 'Черновцы', 'Каменец-Подольский', 'Кривой Рог', 'Днепр', 'Николаев', 'Бердянск'];
+const CITY_API_URL = 'http://api.travelpayouts.com/data/ru/cities.json',
+  PROXY = 'https://cors-anywhere.herokuapp.com/';
+
+let cities = [];
 
 const formSearch = document.querySelector('.form-search'),
   inputCitiesFrom = formSearch.querySelector('.input__cities-from'),
   dropdownCitiesFrom = formSearch.querySelector('.dropdown__cities-from'),
   inputCitiesTo = formSearch.querySelector('.input__cities-to'),
   dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to');
+
+// Get data request
+
+const getData = (url, callbackFunction) => {
+  const request = new XMLHttpRequest();
+  request.open('GET', url);
+  request.addEventListener('readystatechange', () => {
+    if (request.readyState !== 4) return;
+    if (request.status === 200) {
+      callbackFunction(request.response);
+    } else {
+      console.error(request.status);
+    }
+  });
+  request.send();
+};
+
+// Get cities from API
+
+const getCities = (data) => {
+  cities = JSON.parse(data).filter(item => item.name).map(item => item.name);
+};
 
 // Function for displaying dropdown list when type in input
 
@@ -59,3 +84,7 @@ dropdownCitiesFrom.addEventListener('click', (e) => {
 dropdownCitiesTo.addEventListener('click', (e) => {
   fillInput(inputCitiesTo, dropdownCitiesTo, e);
 });
+
+// Get cities from API
+
+getData(PROXY + CITY_API_URL, getCities);
