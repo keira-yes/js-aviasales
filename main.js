@@ -1,5 +1,6 @@
 const CITY_API_URL = 'http://api.travelpayouts.com/data/ru/cities.json',
-  PROXY = 'https://cors-anywhere.herokuapp.com/';
+  PROXY = 'https://cors-anywhere.herokuapp.com/',
+  API_KEY = '756ee7f5074b93862f1b9f343e97dff9';
 
 let cities = [];
 
