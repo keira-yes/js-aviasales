@@ -9,7 +9,8 @@ const formSearch = document.querySelector('.form-search'),
   inputCitiesFrom = formSearch.querySelector('.input__cities-from'),
   dropdownCitiesFrom = formSearch.querySelector('.dropdown__cities-from'),
   inputCitiesTo = formSearch.querySelector('.input__cities-to'),
-  dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to');
+  dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to'),
+  inputDateDepart = formSearch.querySelector('.input__date-depart');
 
 // Get data request
 
@@ -58,6 +59,24 @@ const fillInput = (input, list, e) => {
   }
 };
 
+// Get tickets
+
+const renderCheapTickets = (items) => {
+  console.log(items)
+};
+
+const renderCheapTicket = (items) => {
+  console.log(items)
+};
+
+const getTickets = (data, date) => {
+  const tickets = JSON.parse(data).best_prices;
+  const ticketsDay = tickets.filter(item => date === item.depart_date);
+
+  renderCheapTickets(tickets);
+  renderCheapTicket(ticketsDay);
+};
+
 // Display cities of direction from
 
 inputCitiesFrom.addEventListener('input', () => {
@@ -86,6 +105,21 @@ dropdownCitiesTo.addEventListener('click', (e) => {
 
 formSearch.addEventListener('submit', (e) => {
   e.preventDefault();
+  const fromCity = cities.find(item => inputCitiesFrom.value === item.name),
+  toCity = cities.find(item => inputCitiesTo.value === item.name);
+
+  const formData = {
+    from: fromCity.code,
+    to: toCity.code,
+    date: inputDateDepart.value
+  };
+
+  const {from, to, date} = formData;
+  const getTicketsStringParam = `?origin=${from}&destination=${to}&depart_date=${date}&one_way=true`;
+
+  getData(CALENDAR + getTicketsStringParam, (data) => {
+    getTickets(data, date);
+  });
 });
 
 // Get cities from API
@@ -93,5 +127,3 @@ formSearch.addEventListener('submit', (e) => {
 getData(PROXY + CITY_API_URL, (data) => {
   cities = JSON.parse(data).filter(item => item.name);
 });
-
-// getData(PROXY + CALENDAR + "?origin=SVX&destination=KGD&depart_date=2020-05-15&one_way=true&token=" + API_KEY, getTicket);
