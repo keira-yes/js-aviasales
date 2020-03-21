@@ -42,7 +42,7 @@ const showDropdown = (input, list, data = []) => {
 
   const dropdownList = data.filter(item => {
     const itemName = item.name.toLocaleLowerCase();
-    return itemName.includes(inputValue);
+    return itemName.startsWith(inputValue);
   });
 
   dropdownList.map(item => {
