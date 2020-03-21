@@ -10,7 +10,9 @@ const formSearch = document.querySelector('.form-search'),
   dropdownCitiesFrom = formSearch.querySelector('.dropdown__cities-from'),
   inputCitiesTo = formSearch.querySelector('.input__cities-to'),
   dropdownCitiesTo = formSearch.querySelector('.dropdown__cities-to'),
-  inputDateDepart = formSearch.querySelector('.input__date-depart');
+  inputDateDepart = formSearch.querySelector('.input__date-depart'),
+  cheapestTicket = document.getElementById('cheapest-ticket'),
+  otherCheapTickets = document.getElementById('other-cheap-tickets');
 
 // Get data request
 
@@ -63,6 +65,71 @@ const fillInput = (input, list, e) => {
   }
 };
 
+// Get number of changes
+
+const getNumberOfChanges = (number) => {
+  return number > 0 ?  'Кол-во персадок: ' + number : 'Без пересадок';
+};
+
+// Get name of city by its code
+
+const getCityName = (code) => {
+  const cityCode = cities.find(item => item.code === code);
+  return cityCode.name;
+};
+
+// Function for convert date
+
+const convertDate = (date) => {
+  return new Date(date).toLocaleString('ru-RU', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+// Create card for tickets
+
+const createCard = (data) => {
+  const card = document.createElement('article');
+  card.classList.add('ticket');
+  let cardBlock = '';
+  console.log(data);
+
+  if (data) {
+    const {gate, value, origin, number_of_changes, destination, depart_date} = data;
+    cardBlock = `
+    <h3 class="agent">${gate}</h3>
+    <div class="ticket__wrapper">
+      <div class="left-side">
+        <a href="https://www.aviasales.ru/search/SVX2905KGD1" class="button button__buy">Купить за ${value}₽</a>
+      </div>
+      <div class="right-side">
+        <div class="block-left">
+          <div class="city__from">Вылет из города
+            <span class="city__name">${getCityName(origin)}</span>
+          </div>
+          <div class="date">${convertDate(depart_date)}</div>
+        </div>    
+        <div class="block-right">
+          <div class="changes">${getNumberOfChanges(number_of_changes)}</div>
+          <div class="city__to">Город назначения:
+            <span class="city__name">${getCityName(destination)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    `
+  } else {
+    cardBlock = `<p>К сожалению, билетов нет. Попробуйте выбрать другую дату</p>`
+  }
+
+  card.insertAdjacentHTML('afterbegin', cardBlock);
+  return card;
+};
+
 // Get tickets
 
 const renderCheapTickets = (items) => {
@@ -71,15 +138,16 @@ const renderCheapTickets = (items) => {
 };
 
 const renderCheapTicket = (items) => {
-  // console.log(items)
+  const cheapTicket = createCard(items[0]);
+  cheapestTicket.append(cheapTicket);
 };
 
 const getTickets = (data, date) => {
-  const tickets = JSON.parse(data).best_prices;
-  const ticket = tickets.filter(item => date === item.depart_date);
+  const ticketsAll = JSON.parse(data).best_prices;
+  const ticketsDay = ticketsAll.filter(item => date === item.depart_date);
 
-  renderCheapTickets(tickets);
-  renderCheapTicket(ticket);
+  renderCheapTickets(ticketsAll);
+  renderCheapTicket(ticketsDay);
 };
 
 // Display cities of direction from
@@ -110,6 +178,10 @@ dropdownCitiesTo.addEventListener('click', (e) => {
 
 formSearch.addEventListener('submit', (e) => {
   e.preventDefault();
+
+  cheapestTicket.textContent = '';
+  otherCheapTickets.textContent = '';
+
   const fromCity = cities.find(item => inputCitiesFrom.value === item.name),
   toCity = cities.find(item => inputCitiesTo.value === item.name);
 
@@ -137,4 +209,5 @@ formSearch.addEventListener('submit', (e) => {
 
 getData(PROXY + CITY_API_URL, (data) => {
   cities = JSON.parse(data).filter(item => item.name).sort(sortByField('name'));
+  console.log(cities);
 });
