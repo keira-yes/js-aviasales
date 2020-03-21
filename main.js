@@ -114,17 +114,23 @@ formSearch.addEventListener('submit', (e) => {
   toCity = cities.find(item => inputCitiesTo.value === item.name);
 
   const formData = {
-    from: fromCity.code,
-    to: toCity.code,
+    from: fromCity,
+    to: toCity,
     date: inputDateDepart.value
   };
 
   const {from, to, date} = formData;
-  const getTicketsStringParam = `?origin=${from}&destination=${to}&depart_date=${date}&one_way=true`;
 
-  getData(CALENDAR + getTicketsStringParam, (data) => {
-    getTickets(data, date);
-  });
+  if (from && to) {
+    const getTicketsStringParam = `?origin=${from.code}&destination=${to.code}&depart_date=${date}&one_way=true`;
+
+    getData(CALENDAR + getTicketsStringParam, (data) => {
+      getTickets(data, date);
+    });
+
+  } else {
+    alert('Enter a correct city name!');
+  }
 });
 
 // Get cities from API
