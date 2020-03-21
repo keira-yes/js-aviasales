@@ -90,6 +90,18 @@ const convertDate = (date) => {
   });
 };
 
+// Get sales link for a ticket
+
+const getSalesLink = (data) => {
+  const date = new Date(data.depart_date);
+  const day = date.getDate();
+  const updateDay = day < 10 ? '0' + day : day;
+  const month = date.getMonth() + 1;
+  const updateMonth = month < 10 ? '0' + month : month;
+
+  return 'https://www.aviasales.ru/search/' + data.origin + updateDay + updateMonth + data.destination + '1';
+};
+
 // Create card for tickets
 
 const createCard = (data) => {
@@ -104,7 +116,7 @@ const createCard = (data) => {
     <h3 class="agent">${gate}</h3>
     <div class="ticket__wrapper">
       <div class="left-side">
-        <a href="https://www.aviasales.ru/search/SVX2905KGD1" class="button button__buy">Купить за ${value}₽</a>
+        <a href=${getSalesLink(data)} class="button button__buy" target="_blank">Купить за ${value}₽</a>
       </div>
       <div class="right-side">
         <div class="block-left">
@@ -133,11 +145,13 @@ const createCard = (data) => {
 // Get tickets
 
 const renderCheapTickets = (items) => {
+  otherCheapTickets.innerHTML = '<h2>Самые дешевые билеты на другие даты</h2>';
   items.sort(sortByField('value'));
   // console.log(items)
 };
 
 const renderCheapTicket = (items) => {
+  cheapestTicket.innerHTML = '<h2>Самый дешевый билет на выбранную дату</h2>';
   const cheapTicket = createCard(items[0]);
   cheapestTicket.append(cheapTicket);
 };
@@ -178,9 +192,6 @@ dropdownCitiesTo.addEventListener('click', (e) => {
 
 formSearch.addEventListener('submit', (e) => {
   e.preventDefault();
-
-  cheapestTicket.textContent = '';
-  otherCheapTickets.textContent = '';
 
   const fromCity = cities.find(item => inputCitiesFrom.value === item.name),
   toCity = cities.find(item => inputCitiesTo.value === item.name);
