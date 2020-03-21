@@ -28,6 +28,10 @@ const getData = (url, callbackFunction) => {
   request.send();
 };
 
+// Function for sort
+
+const sortByField = (field) => {return (a, b) => a[field] > b[field] ? 1 : -1};
+
 // Function for displaying dropdown list when type in input
 
 const showDropdown = (input, list, data = []) => {
@@ -62,19 +66,20 @@ const fillInput = (input, list, e) => {
 // Get tickets
 
 const renderCheapTickets = (items) => {
-  console.log(items)
+  items.sort(sortByField('value'));
+  // console.log(items)
 };
 
 const renderCheapTicket = (items) => {
-  console.log(items)
+  // console.log(items)
 };
 
 const getTickets = (data, date) => {
   const tickets = JSON.parse(data).best_prices;
-  const ticketsDay = tickets.filter(item => date === item.depart_date);
+  const ticket = tickets.filter(item => date === item.depart_date);
 
   renderCheapTickets(tickets);
-  renderCheapTicket(ticketsDay);
+  renderCheapTicket(ticket);
 };
 
 // Display cities of direction from
@@ -125,5 +130,5 @@ formSearch.addEventListener('submit', (e) => {
 // Get cities from API
 
 getData(PROXY + CITY_API_URL, (data) => {
-  cities = JSON.parse(data).filter(item => item.name);
+  cities = JSON.parse(data).filter(item => item.name).sort(sortByField('name'));
 });
