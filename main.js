@@ -17,7 +17,7 @@ const formSearch = document.querySelector('.form-search'),
 
 // Get data request
 
-const getData = (url, callbackFunction) => {
+const getData = (url, callbackFunction, reject = console.error) => {
   const request = new XMLHttpRequest();
   request.open('GET', url);
   request.addEventListener('readystatechange', () => {
@@ -25,7 +25,7 @@ const getData = (url, callbackFunction) => {
     if (request.status === 200) {
       callbackFunction(request.response);
     } else {
-      console.error(request.status);
+      reject(request.status);
     }
   });
   request.send();
@@ -214,6 +214,9 @@ formSearch.addEventListener('submit', (e) => {
 
     getData(CALENDAR + getTicketsStringParam, (data) => {
       getTickets(data, date);
+    }, (error) => {
+      alert('Нет рейсов по данному направлению');
+      console.error(error);
     });
 
   } else {
