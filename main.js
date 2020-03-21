@@ -1,7 +1,8 @@
 const CITY_API_URL = 'http://api.travelpayouts.com/data/ru/cities.json',
   PROXY = 'https://cors-anywhere.herokuapp.com/',
   API_KEY = '756ee7f5074b93862f1b9f343e97dff9',
-  CALENDAR = 'http://min-prices.aviasales.ru/calendar_preload';
+  CALENDAR = 'http://min-prices.aviasales.ru/calendar_preload',
+  MAX_COUNT = 10;
 
 let cities = [];
 
@@ -147,7 +148,11 @@ const createCard = (data) => {
 const renderCheapTickets = (items) => {
   otherCheapTickets.innerHTML = '<h2>Самые дешевые билеты на другие даты</h2>';
   items.sort(sortByField('value'));
-  // console.log(items)
+
+  for (let i = 0; i <= MAX_COUNT && i < items.length; i++) {
+    const ticket = createCard(items[i]);
+    otherCheapTickets.append(ticket);
+  }
 };
 
 const renderCheapTicket = (items) => {
